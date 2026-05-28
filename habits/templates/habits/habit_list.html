@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %} My habits! {% endblock %}
+
+{% block content %}
+<h1>My habits!</h1>
+
+<div class="habits-grid">
+    {% for habit in habits %}
+    <div class="habit-card">
+        <h4>{{ habit.name|capfirst }}</h4>
+        <p>{{ habit.frequency|capfirst }}</p>
+        <p>Streak: {{ habit.streak }} days 🔥</p>
+        <small>{{ habit.description }}</small>
+
+        <div>
+            <a href="{% url 'view_habit' habit.id %}">View</a>
+            <a href="{% url 'complete_habit' habit.id %}">✅ Complete</a>
+            <a href="{% url 'delete_habit' habit.id %}">🗑 Delete</a>
+            <a href="{% url 'edit_habit' habit.id%}">Edit</a>
+        </div>
+    </div>
+
+    {% empty %}
+        <p>No habits yet! <a class='btn-habit' href="{% url 'add_habit' %}">Add habit + </a></p>
+    {% endfor %}
+</div>
+{% endblock %}

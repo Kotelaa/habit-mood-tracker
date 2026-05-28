@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block title %}Add habit{% endblock %}
+
+{% block content %}
+<h1>Add habit</h1>
+
+{% include "habits/_form.html" with form_action=add_url submit_label="Add habit" %}
+{% endblock %}

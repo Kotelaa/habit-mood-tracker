@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %} View habit - {{ habit.name }} {% endblock %}
+
+
+{% block content %}
+<h1>View habit - {{ habit.name }}</h1>
+<div class="habit-card">
+    <h4>{{ habit.name|capfirst }}</h4>
+    <p>{{ habit.frequency|capfirst }}</p>
+    <p>Streak: {{ habit.streak }} days 🔥</p>
+    <small>{{ habit.description }}</small>
+    <p class="margin-top=1rem;">Last completed: {{ habit.last_completed }}</p>
+</div>
+{% endblock %}

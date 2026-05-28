@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block title %} Registration {% endblock %}
+
+{% block content %}
+<h1>Registration</h1>
+{% include "habits/_form.html" with form_action=registration_url submit_label="Register" %}
+{% endblock %}

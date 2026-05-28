@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %} Log in {% endblock %}
+
+{% block content %}
+<div>
+    <h1>Log In</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        {% if form.errors %}
+            <div class="errors">
+                Invalid username or password.
+            </div>
+        {% endif %}
+
+        <div class="form-container">
+            <label>Username</label>
+            {{ form.username }}
+        </div>
+
+        <div class="form-container">
+            <label>Password</label>
+            {{ form.password }}
+        </div>
+
+        <button type="submit" class="btn-login-logout">Log In</button>
+        <a class="btn-login-logout" href="{% url 'register' %}">Register here</a>
+        <p class="p-register">Don't have an account? Register first!</p>
+
+    </form>
+
+</div>
+{% endblock %}

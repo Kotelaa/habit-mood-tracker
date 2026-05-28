@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block title %}Edit habit - {{ habit.name }} {% endblock%}
+
+{% block content %}
+<h1>Edit habit - {{ habit.name }}</h1>
+{% include "habits/_form.html" with form_action=edit_url submit_label="Save changes" %}
+{% endblock %}
