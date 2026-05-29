@@ -3,7 +3,8 @@
 {% block title %} My habits! {% endblock %}
 
 {% block content %}
-<h1>My habits!</h1>
+<h1>{{ greeting }}</h1>
+<p class="habit_best">You have {{ total }} habits. Best streak: {{ best.name }}</p>
 
 <div class="habits-grid">
     {% for habit in habits %}

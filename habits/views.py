@@ -1,77 +1,16 @@
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404, redirect, reverse
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
+from django.views.generic import (ListView, DetailView, CreateView,
+                                  UpdateView, DeleteView)
+from django.urls import reverse_lazy, reverse
 
 from .models import Habit
 from .forms import HabitModelForm, RegisterForm
-
-
-@login_required
-def habit_list(request):
-    habits = Habit.objects.filter(user=request.user, is_deleted=False).order_by('-streak')
-    return render(request, 'habits/habit_list.html',
-                  {'habits': habits})
-
-
-@login_required
-def view_habit(request, habit_id):
-    habit = get_object_or_404(Habit, user=request.user, id=habit_id)
-    return render(request, 'habits/view_habit.html',
-                  {'habit': habit})
-
-
-@login_required
-def add_habit(request):
-    if request.method == "POST":
-        form = HabitModelForm(request.POST)
-        if form.is_valid():
-            habit = form.save(commit=False)
-            habit.user = request.user
-            habit.save()
-            messages.success(request, f'Your habit \'{habit.name}\' added!')
-            return redirect('habit_list')
-    else:
-        form = HabitModelForm()
-    return render(request, 'habits/add_habit.html',
-                  {'form': form,
-                   'add_url': reverse('add_habit')})
-
-
-@login_required
-def edit_habit(request, habit_id):
-    habit = get_object_or_404(Habit, user=request.user, id=habit_id)
-    if request.method == 'POST':
-        form = HabitModelForm(request.POST, instance=habit)
-        if form.is_valid():
-            habit = form.save(commit=False)
-            habit.user = request.user
-            habit.save()
-            messages.success(request, f'Your habit \'{habit.name}\' changed!')
-            return redirect('view_habit', habit_id=habit.id)
-    else:
-        form = HabitModelForm(instance=habit)
-    return render(request, 'habits/edit_habit.html',
-                  {'form': form,
-                   'habit': 'habit',
-                   'edit_url': reverse('edit_habit', args=[habit_id])})
-
-
-@login_required
-def complete_habit(request, habit_id):
-    habit = get_object_or_404(Habit, user=request.user, id=habit_id)
-    habit.complete()
-    messages.success(request, f"{habit.name} completed.")
-    return redirect("habit_list")
-
-
-@login_required
-def delete_habit(request, habit_id):
-    habit = get_object_or_404(Habit, user=request.user, id=habit_id)
-    habit.soft_delete()
-    messages.success(request, f"{habit.name} deleted.")
-    return redirect("habit_list")
 
 
 def register(request):
@@ -91,6 +30,101 @@ def register(request):
     return render(request, 'auth/register.html',
                   {'form': form,
                    'registration_url': reverse('register')})
+
+
+
+class ListHabits(LoginRequiredMixin, ListView):
+    model = Habit
+    template_name = 'habits/habit_list.html'
+    context_object_name = 'habits'
+
+    def get_queryset(self):
+        return Habit.objects.filter(user=self.request.user,
+                                    is_deleted=False).order_by('-streak')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        qs = self.get_queryset()
+        context['greeting'] = f'Welcome, {self.request.user.username}!'
+        context['total'] = qs.count()
+        context['best'] = qs.first()
+        return context
+
+
+class DetailHabit(LoginRequiredMixin, DetailView):
+    model = Habit
+    template_name = 'habits/view_habit.html'
+    context_object_name = 'habit'
+    pk_url_kwarg = 'habit_id'
+
+    def get_queryset(self):
+        return Habit.objects.filter(user=self.request.user)
+
+
+class CreateHabit(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = Habit
+    form_class = HabitModelForm
+    template_name = 'habits/add_habit.html'
+    success_url = reverse_lazy('habit_list')
+    success_message = "Habit '%(name)s' created successfully!'"
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['add_url'] = reverse('add_habit')
+        context['submit_label'] = "Add habit"
+        return context
+
+
+class UpdateHabit(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = Habit
+    form_class = HabitModelForm
+    template_name = 'habits/edit_habit.html'
+    context_object_name = 'habit'
+    success_message = "Habit '%(name)s' updated successfully!"
+    pk_url_kwarg = 'habit_id'
+
+    def get_queryset(self):
+        return Habit.objects.filter(user=self.request.user)
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('edit_habit', kwargs={'habit_id': self.object.habit.id})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['edit_url'] = reverse('edit_habit', kwargs={'habit_id': self.object.pk})
+        context['submit_label'] = "Save changes!"
+        return context
+
+
+class DeleteHabit(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+    model = Habit
+    templates = 'habits/habit_confirm_delete.html'
+    success_url = reverse_lazy('habit_list')
+    pk_url_kwarg = 'habit_id'
+    context_object_name = 'habit'
+
+    def get_queryset(self):
+        return Habit.objects.filter(user=self.request.user)
+
+    def form_valid(self, form):
+        messages.success(self.request, f'Habit \'{self.object.name}\' deleted successfully!')
+        return super().form_valid(form)
+
+
+@login_required
+def complete_habit(request, habit_id):
+    habit = get_object_or_404(Habit, user=request.user, id=habit_id)
+    habit.complete()
+    messages.success(request, f"{habit.name} completed.")
+    return redirect("habit_list")
 
 
 

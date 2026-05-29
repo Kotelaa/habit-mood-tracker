@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}Delete habit - {{ habit.name }} {% endblock %}
+
+{% block content %}
+<button class="btn-habit" type="submit">Delete, {{ habit.name }}!</button>
+<a class="btn-habit" href="{% url 'habit_list' %}">Cancel</a>
+
+<p class="p-delete">Be careful! You can't undone delete!</p>
+{% endblock %}
