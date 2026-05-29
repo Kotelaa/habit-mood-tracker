@@ -29,7 +29,7 @@ def register(request):
 
     return render(request, 'auth/register.html',
                   {'form': form,
-                   'registration_url': reverse('register')})
+                   'registration_url': reverse_lazy('register')})
 
 
 
@@ -74,7 +74,7 @@ class CreateHabit(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['add_url'] = reverse('add_habit')
+        context['add_url'] = reverse_lazy('add_habit')
         context['submit_label'] = "Add habit"
         return context
 
@@ -95,18 +95,18 @@ class UpdateHabit(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('edit_habit', kwargs={'habit_id': self.object.habit.id})
+        return reverse_lazy('edit_habit', kwargs={'habit_id': self.object.pk})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['edit_url'] = reverse('edit_habit', kwargs={'habit_id': self.object.pk})
+        context['edit_url'] = reverse_lazy('edit_habit', kwargs={'habit_id': self.object.pk})
         context['submit_label'] = "Save changes!"
         return context
 
 
 class DeleteHabit(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Habit
-    templates = 'habits/habit_confirm_delete.html'
+    template_name = 'habits/habit_confirm_delete.html'
     success_url = reverse_lazy('habit_list')
     pk_url_kwarg = 'habit_id'
     context_object_name = 'habit'
@@ -125,7 +125,3 @@ def complete_habit(request, habit_id):
     habit.complete()
     messages.success(request, f"{habit.name} completed.")
     return redirect("habit_list")
-
-
-
-
