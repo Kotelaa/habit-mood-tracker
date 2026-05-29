@@ -104,7 +104,7 @@ class UpdateHabit(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         return context
 
 
-class DeleteHabit(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+class DeleteHabit(LoginRequiredMixin, DeleteView):
     model = Habit
     template_name = 'habits/habit_confirm_delete.html'
     success_url = reverse_lazy('habit_list')
