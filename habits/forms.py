@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 
 from .models import Habit
 
+
 class HabitModelForm(forms.ModelForm):
     class Meta:
         model = Habit
@@ -52,5 +53,4 @@ class RegisterForm(UserCreationForm):
     def clean_email(self):
         email = self.cleaned_data['email']
         if User.objects.filter(email=email).exists():
-            raise ValidationError("That email is already registered!")
-
+            raise ValidationError('That email is already registered!')
