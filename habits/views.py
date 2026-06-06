@@ -66,7 +66,7 @@ class CreateHabit(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     form_class = HabitModelForm
     template_name = 'habits/add_habit.html'
     success_url = reverse_lazy('habit_list')
-    success_message = "Habit '%(name)s' created successfully!'"
+    success_message = "Habit '%(name)s' created successfully!"
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -95,7 +95,7 @@ class UpdateHabit(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('edit_habit', kwargs={'habit_id': self.object.pk})
+        return reverse_lazy('view_habit', kwargs={'habit_id': self.object.pk})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
