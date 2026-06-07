@@ -24,8 +24,9 @@
     </div>
     {% endif %}
 
-
-    <button class="btn-habit" type="submit">{{ submit_label }}</button>
-    <a class="btn-habit" href="{% url 'habit_list'%}">Cancel</a>
+    <div class="buttons">
+        <button type="submit">{{ submit_label }}</button>
+        <a href="{% url 'habit_list'%}">Cancel</a>
+    </div>
 
 </form>

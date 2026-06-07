@@ -1,8 +1,10 @@
-from rest_framework.serializers import ModelSerializer
-from rest_framework.serializers import ValidationError
+from rest_framework.serializers import ModelSerializer, ValidationError
 
 from .models import Habit
+
+
 class HabitSerializer (ModelSerializer):
+
     class Meta:
         model = Habit
         fields = ['id', 'name', 'frequency', 'description',

@@ -1,10 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}Delete habit - {{ habit.name }} {% endblock %}
+{% block title %}Delete habit - {{ habit.name }}{% endblock %}
 
 {% block content %}
-<button class="btn-habit" type="submit">Delete, {{ habit.name }}!</button>
-<a class="btn-habit" href="{% url 'habit_list' %}">Cancel</a>
-
-<p class="p-delete">Be careful! You can't undone delete!</p>
+<p class="delete-p">Be careful! You can't undo a delete!</p>
+<div class="buttons">
+    <form method="POST">
+        {% csrf_token %}
+        <button class="btn-habit" type="submit">Delete {{ habit.name }}</button>
+        <a class="btn-habit" href="{% url 'habit_list' %}">Cancel</a>
+    </form>
+</div>
 {% endblock %}
