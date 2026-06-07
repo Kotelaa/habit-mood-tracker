@@ -1,0 +1,19 @@
+<div class="habit-card">
+    <h3>{{ habit.name|capfirst }}</h3>
+    <p>{{ habit.frequency|capfirst }}</p>
+    <p>Streak: {{ habit.streak }} days 🔥</p>
+
+    {% if habit.description %}
+        <small>{{ habit.description }}</small>
+    {% endif %}
+
+    <div>
+        <a href="{% url 'view_habit' habit.id %}">View</a>
+        <form method="POST" action="{% url 'complete_habit' habit.id %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit">✅ Complete</button>
+        </form>
+        <a href="{% url 'delete_habit' habit.id %}">🗑 Delete</a>
+        <a href="{% url 'edit_habit' habit.id%}">Edit</a>
+    </div>
+</div>

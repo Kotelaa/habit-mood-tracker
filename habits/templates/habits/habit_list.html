@@ -3,27 +3,65 @@
 {% block title %} My habits! {% endblock %}
 
 {% block content %}
-<h1>{{ greeting }}</h1>
-<p class="habit_best">You have {{ total }} habits. Best streak: {{ best.name }}</p>
+<div class="page-header">
+    <h1>{{ greeting }}</h1>
+    {% if best %}
+    <p><span>🏆 Best streak:</span> {{ best.name }}</p>
+    {% endif %}
+    <p><span>🔥 Total habits:</span> {{ total }}</p>
+    <a class="button-habit" href="{% url 'add_habit' %}">Add habit +</a>
+</div>
 
-<div class="habits-grid">
-    {% for habit in habits %}
-    <div class="habit-card">
-        <h4>{{ habit.name|capfirst }}</h4>
-        <p>{{ habit.frequency|capfirst }}</p>
-        <p>Streak: {{ habit.streak }} days 🔥</p>
-        <small>{{ habit.description }}</small>
+<div class="habits-column">
 
-        <div>
-            <a href="{% url 'view_habit' habit.id %}">View</a>
-            <a href="{% url 'complete_habit' habit.id %}">✅ Complete</a>
-            <a href="{% url 'delete_habit' habit.id %}">🗑 Delete</a>
-            <a href="{% url 'edit_habit' habit.id%}">Edit</a>
+    <div class="column">
+        <div class="column-header daily">
+            <h2>☀️ Daily</h2>
+            <span class="count">{{ daily_count }}</span>
+        </div>
+        <div class="column-body">
+            {% for habit in daily_habits %}
+                {% include "habits/_habit_card.html" with habit=habit %}
+            {% empty %}
+            <div class="no-habits">
+                <p>No daily habits yet! <a href="{% url 'add_habit' %}">Add habit +</a></p>
+            </div>
+            {% endfor %}
         </div>
     </div>
 
-    {% empty %}
-        <p>No habits yet! <a class='btn-habit' href="{% url 'add_habit' %}">Add habit + </a></p>
-    {% endfor %}
+    <div class="column">
+        <div class="column-header weekly">
+            <h2>📅 Weekly</h2>
+            <span class="count">{{ weekly_count }}</span>
+        </div>
+        <div class="column-body">
+            {% for habit in weekly_habits %}
+                {% include "habits/_habit_card.html" with habit=habit %}
+            {% empty %}
+            <div class="no-habits">
+                <p>No weekly habits yet! <a href="{% url 'add_habit' %}">Add habit +</a></p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="column">
+        <div class="column-header monthly">
+            <h2>🗓️ Monthly</h2>
+            <span class="count">{{ monthly_count }}</span>
+        </div>
+        <div class="column-body">
+            {% for habit in monthly_habits %}
+                {% include "habits/_habit_card.html" with habit=habit %}
+            {% empty %}
+            <div class="no-habits">
+                <p>No monthly habits yet! <a href="{% url 'add_habit' %}">Add habit +</a></p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
 </div>
+
 {% endblock %}

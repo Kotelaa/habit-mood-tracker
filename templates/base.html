@@ -11,7 +11,7 @@
 <body>
 
 <nav>
-    <div class="nav-brand">
+    <div class="nav-name">
         <a href="{% url 'habit_list' %}">🌱 HabitTracker</a>
     </div>
     <div class="nav-links">
@@ -21,11 +21,13 @@
             <span class="nav-username">👤 {{ user.username }}</span>
             <form method="POST" action="{% url 'logout' %}" style="display:inline;">
                 {% csrf_token %}
-                <button type="submit" class="nav-logout-btn">Log Out</button>
+                <button type="submit" class="nav-logout">Log Out</button>
             </form>
         {% else %}
+        <div class="buttons">
             <a href="{% url 'login' %}">Log In</a>
-            <a href="{% url 'register' %}" class="nav-register-btn">Register</a>
+            <a href="{% url 'register' %}">Register</a>
+        </div>
         {% endif %}
     </div>
 </nav>

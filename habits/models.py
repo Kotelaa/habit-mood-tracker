@@ -40,24 +40,3 @@ class Habit(models.Model):
     def soft_delete(self):
         self.is_deleted = True
         self.save()
-
-
-
-
-# class Profile(models.Model):
-#     user       = models.OneToOneField(User, on_delete=models.CASCADE)
-#     bio        = models.TextField(blank=True)
-#     timezone   = models.CharField(max_length=50, default="UTC")
-#
-#     def __str__(self):
-#         return f"{self.user.username}'s profile"
-#
-#
-#     @receiver(post_save, sender=User)
-#     def create_profile(sender, instance, created, **kwargs):
-#         if created:
-#             Profile.objects.create(user=instance)
-#
-#     @receiver(post_save, sender=User)
-#     def save_profile(sender, instance, **kwargs):
-#         instance.profile.save()

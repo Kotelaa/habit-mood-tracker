@@ -48,6 +48,13 @@ class ListHabits(LoginRequiredMixin, ListView):
         context['greeting'] = f'Welcome, {self.request.user.username}!'
         context['total'] = qs.count()
         context['best'] = qs.first()
+
+        context['daily_habits'] = qs.filter(frequency='daily')
+        context['weekly_habits'] = qs.filter(frequency='weekly')
+        context['monthly_habits'] = qs.filter(frequency='monthly')
+        context['daily_count'] = context['daily_habits'].count()
+        context['weekly_count'] = context['weekly_habits'].count()
+        context['monthly_count'] = context['monthly_habits'].count()
         return context
 
 
@@ -115,12 +122,16 @@ class DeleteHabit(LoginRequiredMixin, DeleteView):
         return Habit.objects.filter(user=self.request.user)
 
     def form_valid(self, form):
+        self.object = self.get_object()
+        self.object.soft_delete()
         messages.success(self.request, f'Habit \'{self.object.name}\' deleted successfully!')
         return super().form_valid(form)
 
 
 @login_required
 def complete_habit(request, habit_id):
+    if request.method != 'POST':
+        return redirect('habit_list')
     habit = get_object_or_404(Habit, user=request.user, id=habit_id)
     habit.complete()
     messages.success(request, f"{habit.name} completed.")
