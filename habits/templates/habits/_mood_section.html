@@ -1,48 +1,50 @@
-<div>
-    {% if today_mood %}
+<div class="mood-section">
+    <h2>Mood Tracker</h2>
+    <div class="mood-container">
+        {% if today_mood %}
         <div>
             <p>Today's mood: <strong>{{ today_mood.get_mood_display }}</strong></p>
             {% if today_mood.note %}
-                <p>{{ today_mood.note }}</p>
+                <small>{{ today_mood.note }}</small>
             {% endif %}
         </div>
-    {% else %}
-        <p>You haven't logged your mood today yet.</p>
-    {% endif %}
+        {% else %}
+            <p>You haven't logged your mood today yet.</p>
+        {% endif %}
 
-    <form method="post" action="{% url 'add_mood' %}">
-        {% csrf_token %}
-        {% for field in mood_form %}
-        <div>
-            <label>{{ field.label }}</label>
-            {{ field }}
-        </div>
-        {% endfor %}
-
-        <button type="submit">
-            {% if today_mood %}
-                Update mood
-            {% else %}
-                Log mood
-            {% endif %}
-        </button>
-    </form>
-
-
-    {% if recent_moods %}
-    <div>
-        <h4>Recent moods</h4>
-        <div>
-            {% for mood in recent_moods %}
-            <div>
-                <p>{{ mood.get_mood_display }}</p>
-                {% if mood.note %}
-                    <p>{{ mood.note }}</p>
-                {% endif %}
+        <form method="post" action="{% url 'add_mood' %}">
+            {% csrf_token %}
+            {% for field in mood_form %}
+            <div class="form-mood">
+                <label>{{ field.label }}</label>
+                {{ field }}
             </div>
             {% endfor %}
-        </div>
-    </div>
-    {% endif %}
 
+            <button type="submit" class="mood-button">
+                {% if today_mood %}
+                    Update mood
+                {% else %}
+                    Log mood
+                {% endif %}
+            </button>
+        </form>
+
+
+        {% if recent_moods %}
+        <div class="recent-mood">
+            <h3>Recent moods</h3>
+            <div class="mood-columns">
+                {% for mood in recent_moods %}
+                <div class="mood-column">
+                    <p>{{ mood.get_mood_display }}</p>
+                    {% if mood.note %}
+                        <small>{{ mood.note }}</small>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
 </div>
