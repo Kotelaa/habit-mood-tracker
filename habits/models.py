@@ -61,8 +61,8 @@ class Mood(models.Model):
 
     class Meta:
         ordering = ['-created_at']
-        unique_together = (('user', 'mood'),)
+        unique_together = (('user', 'date'),)
 
-        def __str__(self):
-            return (f'{self.user.username} | {self.get_mood_display()} | '
-                    f'Note: {self.note} | Date: {self.date}')
+    def __str__(self):
+        return (f'{self.user.username} | {self.get_mood_display()} | '
+                f'Note: {self.note} | Date: {self.date}')

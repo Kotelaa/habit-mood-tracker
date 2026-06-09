@@ -1,6 +1,7 @@
 from django.urls import path
 
 from habits import views
+from .mood_view import add_mood
 
 urlpatterns = [
     path('', views.ListHabits.as_view(), name='habit_list'),
@@ -12,5 +13,7 @@ urlpatterns = [
     path('habits/edit/<int:habit_id>/', views.UpdateHabit.as_view(),
          name='edit_habit'),
     path('habits/complete/<int:habit_id>/', views.complete_habit,
-         name='complete_habit')
+         name='complete_habit'),
+
+    path('add/mood/', add_mood, name='add_mood'),
 ]

@@ -9,6 +9,7 @@ from django.urls import reverse_lazy, reverse
 
 from .models import Habit
 from .forms import HabitModelForm
+from .mood_view import get_mood_context
 
 
 class ListHabits(LoginRequiredMixin, ListView):
@@ -33,6 +34,7 @@ class ListHabits(LoginRequiredMixin, ListView):
         context['daily_count'] = context['daily_habits'].count()
         context['weekly_count'] = context['weekly_habits'].count()
         context['monthly_count'] = context['monthly_habits'].count()
+        context.update(get_mood_context(self.request.user))
         return context
 
 
