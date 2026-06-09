@@ -9,7 +9,9 @@
     <h3>{{ habit.name|capfirst }}</h3>
     <p>{{ habit.frequency|capfirst }}</p>
     <p>Streak: {{ habit.streak }} days 🔥</p>
-    <small>{{ habit.description }}</small>
+    {% if habit.description %}
+        <small>{{ habit.description }}</small>
+    {% endif %}
     <p>Last completed: {{ habit.last_completed }}</p>
 </div>
 {% endblock %}
