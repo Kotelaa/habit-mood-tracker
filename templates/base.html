@@ -18,7 +18,7 @@
         {% if user.is_authenticated %}
             <a href="{% url 'habit_list' %}">My Habits</a>
             <a href="{% url 'add_habit' %}">+ Add Habit</a>
-            <span class="nav-username">👤 {{ user.username }}</span>
+            <span class="nav-username">🍀 {{ user.username }}</span>
             <form method="POST" action="{% url 'logout' %}" style="display:inline;">
                 {% csrf_token %}
                 <button type="submit" class="nav-logout">Log Out</button>

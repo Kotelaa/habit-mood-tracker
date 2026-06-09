@@ -1,7 +1,5 @@
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib import messages
-from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
@@ -10,27 +8,7 @@ from django.views.generic import (ListView, DetailView, CreateView,
 from django.urls import reverse_lazy, reverse
 
 from .models import Habit
-from .forms import HabitModelForm, RegisterForm
-
-
-def register(request):
-    if request.user.is_authenticated:
-        return redirect('habit_list')
-
-    if request.method == 'POST':
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            messages.success(request, f'Hello, {user.username}')
-            return redirect('habit_list')
-    else:
-        form = RegisterForm()
-
-    return render(request, 'auth/register.html',
-                  {'form': form,
-                   'registration_url': reverse_lazy('register')})
-
+from .forms import HabitModelForm
 
 
 class ListHabits(LoginRequiredMixin, ListView):

@@ -8,7 +8,7 @@ from drf_spectacular.views import (
     SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 )
 
-from habits import views
+from habits import views, authentication_view
 
 
 urlpatterns = [
@@ -19,7 +19,7 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='auth/login.html'),
          name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-    path('register/', views.register, name='register'),
+    path('register/', authentication_view.register, name='register'),
 
     # Api urls
     path('api/', include('habits.api_urls')),
