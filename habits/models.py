@@ -40,3 +40,29 @@ class Habit(models.Model):
     def soft_delete(self):
         self.is_deleted = True
         self.save()
+
+
+class Mood(models.Model):
+    MOOD_CHOICES = [
+        (5, '😄 Great'),
+        (4, '🙂 Good'),
+        (3, '😐 Okay'),
+        (2, '😕 Low'),
+        (1, '😞 Bad'),
+    ]
+    user = models.ForeignKey(User,
+                             on_delete=models.CASCADE,
+                             related_name='moods')
+    mood = models.IntegerField(choices=MOOD_CHOICES,
+                               default=4)
+    note = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    date = models.DateField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        unique_together = (('user', 'date'),)
+
+    def __str__(self):
+        return (f'{self.user.username} | {self.get_mood_display()} | '
+                f'Note: {self.note} | Date: {self.date}')
