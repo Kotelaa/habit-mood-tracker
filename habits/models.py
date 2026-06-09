@@ -65,4 +65,4 @@ class Mood(models.Model):
 
     def __str__(self):
         return (f'{self.user.username} | {self.get_mood_display()} | '
-                f'Note: {self.note} | Date: {self.date}')
+                    f'Note: {self.note} | Date: {self.date}')

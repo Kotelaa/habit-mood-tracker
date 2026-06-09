@@ -19,7 +19,7 @@ def add_mood(request):
             messages.success(request, 'Mood logged successfully!')
         else:
             messages.error(request, 'Invalid mood entry.')
-    return redirect('habits_list')
+    return redirect('habit_list')
 
 
 def get_mood_context(user):
