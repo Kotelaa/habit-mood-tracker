@@ -1,0 +1,48 @@
+<div>
+    {% if today_mood %}
+        <div>
+            <p>Today's mood: <strong>{{ today_mood.get_mood_display }}</strong></p>
+            {% if today_mood.note %}
+                <p>{{ today_mood.note }}</p>
+            {% endif %}
+        </div>
+    {% else %}
+        <p>You haven't logged your mood today yet.</p>
+    {% endif %}
+
+    <form method="post" action="{% url 'add_mood' %}">
+        {% csrf_token %}
+        {% for field in mood_form %}
+        <div>
+            <label>{{ field.label }}</label>
+            {{ field }}
+        </div>
+        {% endfor %}
+
+        <button type="submit">
+            {% if today_mood %}
+                Update mood
+            {% else %}
+                Log mood
+            {% endif %}
+        </button>
+    </form>
+
+
+    {% if recent_moods %}
+    <div>
+        <h4>Recent moods</h4>
+        <div>
+            {% for mood in recent_moods %}
+            <div>
+                <p>{{ mood.get_mood_display }}</p>
+                {% if mood.note %}
+                    <p>{{ mood.note }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+</div>
