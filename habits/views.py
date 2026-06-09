@@ -6,6 +6,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import (ListView, DetailView, CreateView,
                                   UpdateView, DeleteView)
 from django.urls import reverse_lazy, reverse
+from django.contrib import messages
 
 from .models import Habit
 from .forms import HabitModelForm

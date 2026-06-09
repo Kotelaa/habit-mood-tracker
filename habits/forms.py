@@ -16,6 +16,7 @@ class RegisterForm(UserCreationForm):
         email = self.cleaned_data['email']
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError('That email is already registered!')
+        return email
 
 
 class HabitModelForm(forms.ModelForm):
