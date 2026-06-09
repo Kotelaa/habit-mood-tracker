@@ -8,13 +8,13 @@ weekly, and monthly habits, build streaks, and monitor progress through a REST A
  
 ## Features
  
-- **Habit management** — create, edit, delete, and complete habits
-- **Streak tracking** — automatically increments your streak each time you complete a habit
-- **Frequency columns** — habits are organized into Daily, Weekly, and Monthly columns
-- **Soft delete** — deleted habits are hidden, not permanently removed
-- **User authentication** — register, log in, and log out; each user sees only their own habits
-- **REST API** — full CRUD API with filtering, searching, and ordering
-- **API documentation** — interactive Swagger UI and ReDoc out of the box
+- **Habit management** – create, edit, delete, and complete habits
+- **Streak tracking** – automatically increments your streak each time you complete a habit
+- **Frequency columns** – habits are organized into Daily, Weekly, and Monthly columns
+- **Soft delete** – deleted habits are hidden, not permanently removed
+- **User authentication** – register, log in, and log out; each user sees only their own habits
+- **REST API** – full CRUD API with filtering, searching, and ordering
+- **API documentation** – interactive Swagger UI and ReDoc out of the box
 ---
  
 ## Tech Stack
@@ -149,8 +149,8 @@ Base URL: `/api/`
  
 | URL | Description |
 |---|---|
-| `/api/swagger/` | Swagger UI — interactive docs |
-| `/api/redoc/` | ReDoc — readable docs |
+| `/api/swagger/` | Swagger UI – interactive docs |
+| `/api/redoc/` | ReDoc – readable docs |
 | `/api/schema/` | Raw OpenAPI schema (JSON) |
  
 All API endpoints require authentication. Log in via the web interface 
@@ -178,7 +178,3 @@ first (session auth), or configure token/JWT authentication for external clients
 3. Commit changes: `git commit -m 'Add some feature'`
 4. Push to the branch: `git push origin feature/your-feature`
 5. Open a pull request
----
- 
-## License
-This project is open source and available under the [MIT License](LICENSE).
