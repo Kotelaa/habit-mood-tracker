@@ -1,9 +1,10 @@
+from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer, ValidationError
 
-from .models import Habit
+from .models import Habit, Mood
 
 
-class HabitSerializer (ModelSerializer):
+class HabitSerializer(ModelSerializer):
 
     class Meta:
         model = Habit
@@ -15,3 +16,12 @@ class HabitSerializer (ModelSerializer):
         if len(value) < 3:
             raise ValidationError('Name must be at least 3 characters!')
         return value.capitalize()
+
+
+class MoodSerializer(ModelSerializer):
+    mood_display = serializers.CharField(source='get_mood_display', read_only=True)
+
+    class Meta:
+        model = Mood
+        fields = ['id', 'mood', 'mood_display', 'note', 'date', 'created_at']
+        read_only_fields = ['id', 'date', 'created_at']

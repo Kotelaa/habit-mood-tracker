@@ -3,10 +3,12 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.db.models import Avg, Count, Max
-from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse,OpenApiExample
+from drf_spectacular.utils import (extend_schema, OpenApiParameter,
+                                   OpenApiResponse,OpenApiExample)
 
-from .serializers import HabitSerializer
-from .models import Habit
+from .serializers import HabitSerializer, MoodSerializer
+from .models import Habit, Mood
+
 
 class HabitViewSet(viewsets.ModelViewSet):
     serializer_class = HabitSerializer
@@ -29,9 +31,8 @@ class HabitViewSet(viewsets.ModelViewSet):
 
 
     @extend_schema(
-        summary='List all habits',
+        summary='List all habits', tags=['Habits'],
         description='Returns all habits for the logged-in user ordered by streak.',
-        tags=['Habits'],
         responses={200: HabitSerializer(many=True),
                    401: OpenApiResponse(description='Authentication required!')},
         parameters=[
@@ -100,8 +101,7 @@ class HabitViewSet(viewsets.ModelViewSet):
 
 
     @extend_schema(
-        summary='Get one habit',
-        tags=['Habits'],
+        summary='Get one habit', tags=['Habits'],
         responses={200: HabitSerializer,
                    404: OpenApiResponse(description='Not found')},
     )
@@ -110,8 +110,7 @@ class HabitViewSet(viewsets.ModelViewSet):
 
 
     @extend_schema(
-        summary='Update habit',
-        tags=['Habits'],
+        summary='Update habit', tags=['Habits'],
         request=HabitSerializer,
         responses={200: HabitSerializer,
                    400: OpenApiResponse(description='Validation error')},
@@ -121,20 +120,18 @@ class HabitViewSet(viewsets.ModelViewSet):
 
 
     @extend_schema(
-        summary='Partially update habit',
-        tags=['Habits'],
+        summary='Partially update habit', tags=['Habits'],
         request=HabitSerializer,
         responses={200: HabitSerializer,
-                   400: OpenApiResponse(description='Validation error')},
+                   400: OpenApiResponse(description='Validation error')}
     )
     def partial_update(self, request, *args, **kwargs):
         return super().partial_update(request, *args, **kwargs)
 
 
     @extend_schema(
-        summary='Delete habit',
-        tags=['Habits'],
-        responses={204: None},
+        summary='Delete habit', tags=['Habits'],
+        responses={204: None}
     )
     def destroy(self, request, *args, **kwargs):
         return super().destroy(request, *args, **kwargs)
@@ -195,3 +192,64 @@ class HabitViewSet(viewsets.ModelViewSet):
         }
         return Response(data)
 
+
+
+class MoodViewSet(viewsets.ModelViewSet):
+    serializer_class = MoodSerializer
+    permission_classes = [IsAuthenticated]
+    ordering_fields = ['date', 'created_at']
+
+    def get_queryset(self):
+        return Mood.objects.filter(user=self.request.user)
+
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+    @extend_schema(
+        summary='List all moods', tags=['Mood'],
+        description='Returns all moods for the logged-in user',
+        responses={200: MoodSerializer(many=True),
+                   401: OpenApiResponse(description='Authentication required!')}
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, *kwargs)
+
+
+    @extend_schema(
+        summary='Log mood', tags=['Mood'],
+        description='Creates a new mood for the logged-in user.',
+        request=MoodSerializer
+    )
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+
+
+    @extend_schema(summary='Get mood', tags=['Mood'])
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+
+    @extend_schema(
+        summary='Update mood', tags=['Mood'],
+        request=MoodSerializer
+    )
+    def update(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+
+    @extend_schema(
+        summary='Partially update mood', tags=['Mood'],
+        request=MoodSerializer,
+    )
+    def partial_update(self, request, *args, **kwargs):
+        return super().partial_update(request, *args, **kwargs)
+
+
+    @extend_schema(
+        summary='Delete mood', tags=['Mood'],
+        responses={204: None}
+    )
+    def destroy(self, request, *args, **kwargs):
+        return super().destroy(request, *args, **kwargs)
