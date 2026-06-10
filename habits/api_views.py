@@ -160,7 +160,7 @@ class HabitViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @extend_schema(
-        summary='Get habit stats',
+        summary='Get habit stats', tags=['Habits'],
         description='Returns aggregated stats for all user habits.',
         responses={
             200: OpenApiResponse(
