@@ -138,9 +138,8 @@ class HabitViewSet(viewsets.ModelViewSet):
 
 
     @extend_schema(
-        summary='Complete habit',
+        summary='Complete habit', tags=['Habits'],
         description='Marks habit as completed today and add +1 to streak',
-        tags=['Habits'],
         responses={
             200: OpenApiResponse(
                 description='Habit completed',
@@ -211,7 +210,18 @@ class MoodViewSet(viewsets.ModelViewSet):
         summary='List all moods', tags=['Mood'],
         description='Returns all moods for the logged-in user',
         responses={200: MoodSerializer(many=True),
-                   401: OpenApiResponse(description='Authentication required!')}
+                   401: OpenApiResponse(description='Authentication required!')},
+        parameters=[
+            OpenApiParameter(
+                name='Order mood by created_at',
+                description='Sort results',
+                enum=['created_at', '-created_at'],
+                default='-created_at',
+                required=False,
+                type=str,
+                location=OpenApiParameter.QUERY
+            )
+        ],
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, *kwargs)
@@ -220,20 +230,37 @@ class MoodViewSet(viewsets.ModelViewSet):
     @extend_schema(
         summary='Log mood', tags=['Mood'],
         description='Creates a new mood for the logged-in user.',
-        request=MoodSerializer
+        request=MoodSerializer,
+        examples=[
+            OpenApiExample(
+                'Daily habit',
+                value={
+                    'mood': '4',
+                    'note': 'It was a good day',
+                },
+                request_only=True,
+            ),
+        ],
     )
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
 
 
-    @extend_schema(summary='Get mood', tags=['Mood'])
+    @extend_schema(
+        summary='Get mood', tags=['Mood'],
+        description='Single mood by id',
+        responses={200: MoodSerializer,
+                   404: OpenApiResponse(description='Not found')},
+    )
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
 
     @extend_schema(
         summary='Update mood', tags=['Mood'],
-        request=MoodSerializer
+        request=MoodSerializer,
+        responses={200: MoodSerializer,
+                   400: OpenApiResponse(description='Validation error')}
     )
     def update(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
@@ -242,6 +269,8 @@ class MoodViewSet(viewsets.ModelViewSet):
     @extend_schema(
         summary='Partially update mood', tags=['Mood'],
         request=MoodSerializer,
+        responses={200: MoodSerializer,
+                   400: OpenApiResponse(description='Validation error')}
     )
     def partial_update(self, request, *args, **kwargs):
         return super().partial_update(request, *args, **kwargs)
