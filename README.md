@@ -1,66 +1,75 @@
 
-# 🌱 HabitTracker
+# 🌱 A tracker of habits and moods
  
-A full-stack habit tracking web application built with Django. Track your daily, 
-weekly, and monthly habits, build streaks, and monitor progress through a REST API.
- 
+A web application for tracking daily, weekly, and monthly habits with mood 
+logging and streak tracking. Built with Django and PostgreSQL.
+
+**Live demo:** https://habittracker-production-8eea.up.railway.app
+
 ---
  
 ## Features
  
-- **Habit management** – create, edit, delete, and complete habits
-- **Streak tracking** – automatically increments your streak each time you complete a habit
-- **Frequency columns** – habits are organized into Daily, Weekly, and Monthly columns
-- **Soft delete** – deleted habits are hidden, not permanently removed
 - **User authentication** – register, log in, and log out; each user sees only their own habits
+- **Habit management** – create, edit, delete, and complete habits
+- **Soft delete** – deleted habits are hidden, not permanently removed
+- **Track streaks** – complete habits and watch your streak grow
+- **Frequency columns** – habits are organized into Daily, Weekly, and Monthly columns
+- **Mood logging** — log your mood once per day with notes
 - **REST API** – full CRUD API with filtering, searching, and ordering
-- **API documentation** – interactive Swagger UI and ReDoc out of the box
+- **API documentation** – interactive Swagger UI and ReDoc
+- Deployed on Railway with PostgreSQL
+
+
 ---
  
 ## Tech Stack
- - **Backend**: Django 6, Django REST Framework
+ - **Backend**: Python 3.14, Django 6.0 , Django REST Framework
  - **Database**: PostgreSQL
- - **API docs**: drf-spectacular (Swagger / ReDoc)
+ - **API**: Django REST Framework , 
+ - **API Docs**: drf-spectacular (Swagger / ReDoc)
  - **Filtering**: django-filter
- - **Auth**: Django session authentication
+ - **Auth**: Django built-in authentication 
  - **Frontend**: Django templates, plain CSS
- 
+ - **Static files**: WhiteNoise
+ - **Deployment**: Railway
+
+
+
 ---
  
 ## Project Structure
  
 ```
+## Project Structure
 habit_tracker/
-├── config/                  # Project settings
+├── config/
 │   ├── settings.py
 │   ├── urls.py
 │   └── wsgi.py
-├── habits/                  # Main app
-│   ├── models.py            # Habit model
-│   ├── views.py             # Template views (ListView, CreateView, etc.)
-│   ├── api_views.py         # DRF ViewSet
-│   ├── serializers.py       # DRF serializers
-│   ├── forms.py             # Django forms
-│   ├── urls.py              # Template URL routes
-│   ├── api_urls.py          # API URL routes
-│   └── templates/
-│       ├── base.html
-│       ├── habits/
-│       │   ├── habit_list.html
-│       │   ├── view_habit.html
-│       │   ├── add_habit.html
-│       │   ├── edit_habit.html
-│       │   ├── habit_confirm_delete.html
-│       │   ├── _habit_card.html
-│       │   └── _form.html
-│       └── auth/
-│           ├── login.html
-│           └── register.html
-├── .env                     # Environment variables (not committed)
+├── habits/
+│   ├── models.py           # Habit and Mood models
+│   ├── views.py            # Class-based views
+│   ├── api_views.py        # DRF ViewSets
+│   ├── serializers.py      # DRF Serializers
+│   ├── forms.py            # Django forms
+│   ├── urls.py             # URL patterns
+│   ├── api_urls.py         # API URL patterns
+│   ├── authentication_view.py  # Registration view
+│   └── mood_view.py        # Mood views
+├── templates/
+│   ├── base.html
+│   ├── auth/
+│   └── habits/
+├── static/
+├── .env.example
+├── manage.py
+├── Procfile
 ├── requirements.txt
-└── manage.py
+└── runtime.txt
 ```
  
+
 ---
  
 ## Getting Started
@@ -120,11 +129,12 @@ python manage.py runserver
  
 Visit `http://127.0.0.1:8000` in your browser.
  
+
 ---
  
-## API
- 
-Base URL: `/api/`
+## API Endpoints
+
+### Habits
  
 | Method | Endpoint | Description |
 |---|---|---|
@@ -136,7 +146,8 @@ Base URL: `/api/`
 | DELETE | `/api/habits/{id}/` | Soft-delete a habit |
 | POST | `/api/habits/{id}/complete/` | Mark habit as completed (+1 streak) |
 | GET | `/api/habits/stats/` | Get aggregated stats |
- 
+
+
 ### Query parameters (list endpoint)
  
 | Parameter | Description | Example |
@@ -144,6 +155,16 @@ Base URL: `/api/`
 | `search` | Filter by name or description | `?search=exercise` |
 | `frequency` | Filter by frequency | `?frequency=daily` |
 | `ordering` | Sort results | `?ordering=-streak` |
+
+
+### Mood
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/mood/ ` | List mood entries  |
+| POST | `/api/mood/  ` | Log today's mood |
+| PATCH | `/api/mood/{id}/` | Update today's mood  |
+
+
  
 ### API documentation
  
@@ -155,7 +176,7 @@ Base URL: `/api/`
  
 All API endpoints require authentication. Log in via the web interface 
 first (session auth), or configure token/JWT authentication for external clients.
- 
+
 ---
  
 ## Environment Variables
@@ -167,14 +188,5 @@ first (session auth), or configure token/JWT authentication for external clients
 | `DB_USER` | PostgreSQL user |
 | `DB_PASSWORD` | PostgreSQL password |
 | `DB_HOST` | Database host (usually `localhost`) |
-| `DB_PORT` | Database port (usually `5432`) |
- 
----
- 
-## Contributing
- 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/your-feature`
-3. Commit changes: `git commit -m 'Add some feature'`
-4. Push to the branch: `git push origin feature/your-feature`
-5. Open a pull request
+| `DB_PORT` | Database port (usually `5432`) |'
+

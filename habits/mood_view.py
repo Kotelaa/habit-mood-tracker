@@ -12,6 +12,7 @@ def add_mood(request):
     existing = Mood.objects.filter(user=request.user, date=today).first()
     if request.method == 'POST':
         form = MoodForm(request.POST, instance=existing)
+
         if form.is_valid():
             mood = form.save(commit=False)
             mood.user = request.user
@@ -19,6 +20,7 @@ def add_mood(request):
             messages.success(request, 'Mood logged successfully!')
         else:
             messages.error(request, 'Invalid mood entry.')
+
     return redirect('habit_list')
 
 
