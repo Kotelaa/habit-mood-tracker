@@ -106,7 +106,7 @@ class DeleteHabit(LoginRequiredMixin, DeleteView):
         self.object = self.get_object()
         self.object.soft_delete()
         messages.success(self.request, f'Habit \'{self.object.name}\' deleted successfully!')
-        return super().form_valid(form)
+        return redirect(self.success_url)
 
 
 @login_required
