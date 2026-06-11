@@ -165,6 +165,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_DIRS = [BASE_DIR / 'habits' / 'static']
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
