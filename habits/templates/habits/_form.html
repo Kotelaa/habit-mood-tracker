@@ -17,7 +17,7 @@
     {% endfor %}
 
     {% if form.non_field_errors %}
-    <div class="errors">
+    <div class="message">
         {% for error in form.non_field_errors %}
         <span class="error">{{ error }}</span>
         {% endfor %}
