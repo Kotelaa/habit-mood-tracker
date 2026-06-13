@@ -7,9 +7,9 @@
         {{ field.help_text }}
 
         {% if field.errors %}
-        <div class="errors">
+        <div class="register-message">
             {% for error in field.errors %}
-            <span class="error">{{ error }}</span>
+            <span class="register-error">{{ error }}</span>
             {% endfor %}
         </div>
     {% endif %}
@@ -17,9 +17,9 @@
     {% endfor %}
 
     {% if form.non_field_errors %}
-    <div class="message">
+    <div class="register-message">
         {% for error in form.non_field_errors %}
-        <span class="error">{{ error }}</span>
+        <span class="register-error">{{ error }}</span>
         {% endfor %}
     </div>
     {% endif %}

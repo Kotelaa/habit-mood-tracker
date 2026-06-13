@@ -383,22 +383,18 @@ footer {
 }
 
 
-# ---------------------------------  messages styles
+
 .message {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
     background: rgba(255, 255, 255, 0.25);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 1.5rem;
-    padding: 1.5rem 2rem;
     margin: 2rem 0rem;
 }
 
 .success {
-    padding: 1.5rem 2rem;
+    padding: 1rem 2rem;
     background: rgba(213, 237, 181, 0.5);
     border-color: rgba(72, 89, 50, 0.3);
     border-radius: 4rem;
@@ -406,7 +402,29 @@ footer {
 }
 
 .error {
-    padding: 1.5rem 2rem;
+    padding: 1rem 2rem;
+    background: rgba(255, 100, 100, 0.2);
+    border-color: rgba(255, 100, 100, 0.3);
+    border-radius: 4rem;
+    color: #8B0000;
+}
+
+
+.register-message{
+    margin: 2rem 0rem;
+    font-size: 0.7rem;
+}
+
+.register-success {
+    padding: 0.5rem 1rem;
+    background: rgba(213, 237, 181, 0.5);
+    border-color: rgba(72, 89, 50, 0.3);
+    border-radius: 4rem;
+    color: #485932;
+}
+
+.register-error {
+    padding: 0.5rem 1rem;
     background: rgba(255, 100, 100, 0.2);
     border-color: rgba(255, 100, 100, 0.3);
     border-radius: 4rem;
