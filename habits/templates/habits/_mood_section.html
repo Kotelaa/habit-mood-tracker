@@ -39,7 +39,7 @@
                 <div class="mood-column">
                     <p>{{ mood.get_mood_display }}</p>
                     {% if mood.note %}
-                        <small>{{ mood.note }}</small>
+                        <small>{{ mood.note|truncatechars:40 }}</small>
                     {% endif %}
                 </div>
                 {% endfor %}
