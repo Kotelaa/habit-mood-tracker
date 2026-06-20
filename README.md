@@ -15,7 +15,7 @@ logging and streak tracking. Built with Django and PostgreSQL.
 - **Soft delete** – deleted habits are hidden, not permanently removed
 - **Track streaks** – complete habits and watch your streak grow
 - **Frequency columns** – habits are organized into Daily, Weekly, and Monthly columns
-- **Mood logging** — log your mood once per day with notes
+- **Mood logging** – log your mood once per day with notes
 - **REST API** – full CRUD API with filtering, searching, and ordering
 - **API documentation** – interactive Swagger UI and ReDoc
 - Deployed on Railway with PostgreSQL
