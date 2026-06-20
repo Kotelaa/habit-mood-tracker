@@ -1,5 +1,5 @@
 
-# 🌱 A tracker of habits and moods
+# 🌱 Habit and Mood Tracker
  
 A web application for tracking daily, weekly, and monthly habits with mood 
 logging and streak tracking. Built with Django and PostgreSQL.
