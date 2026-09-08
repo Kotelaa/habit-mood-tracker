@@ -1,0 +1,12 @@
+SECRET_KEY=your-secret-key-here
+DEBUG=True
+ALLOWED_HOSTS=127.0.0.1,localhost
+
+DB_NAME=habit_tracker
+DB_USER=postgres
+DB_PASSWORD=password123
+DB_HOST=localhost
+DB_PORT=5432
+
+# You can generate SECRET_KEY with command
+# python -c "import secrets; print(secrets.token_urlsafe(50))"
