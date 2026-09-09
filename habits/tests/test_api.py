@@ -49,3 +49,12 @@ def test_soft_delete_habit(auth_client):
     habit = Habit.objects.get(id=habit_id)
     assert habit.is_deleted == True
 
+
+@pytest.mark.django_db
+def test_user_cannot_access_others_habits(auth_client, other_user):
+    from habit.models import Habit
+    other_habit = Habit.objects.create(user=other_user,
+                                              name='Not shown habit')
+
+    response = auth_client.get(f'/api/habits/{other_habit.id}')
+    assert response.status_code in (403, 404)
