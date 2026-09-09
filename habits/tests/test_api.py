@@ -23,10 +23,29 @@ def test_get_nonexistent_habit(auth_client):
 
 @pytest.mark.django_db
 def test_update_habit(auth_client):
-    response = auth_client.post('/api/habits/', {'name': 'Old name'})
+    create_response = auth_client.post('/api/habits/', {'name': 'Old name'})
     habit_id = create_response.data['id']
 
     update_response = auth_client.patch(f'/api/habits/{habit_id}',
                                         {'name': 'New name'})
     assert update_response.status_code == 200
     assert update_response.data['name'] == 'New name'
+
+
+@pytest.mark.django_db
+def test_soft_delete_habit(auth_client):
+    create_response = auth_client.post('/api/habits/',
+                                       {'name': 'To be deleted'})
+    habit_id = create_response.data['id']
+
+    delete_response = auth_client.delete(f'/api/habits/{habit_id}/')
+    assert delete_response.status_code == 204
+
+    list_response = auth_client.get('/api/habits/')
+    habit_ids = [h['id'] for h in list_response.data['results']]
+    assert habit_id not in habit_ids
+
+    from habit.models import Habit
+    habit = Habit.objects.get(id=habit_id)
+    assert habit.is_deleted == True
+
