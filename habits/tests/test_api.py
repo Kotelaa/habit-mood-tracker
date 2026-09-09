@@ -58,3 +58,16 @@ def test_user_cannot_access_others_habits(auth_client, other_user):
 
     response = auth_client.get(f'/api/habits/{other_habit.id}')
     assert response.status_code in (403, 404)
+
+
+@pytest.mark.django_db
+def test_filter_habits_by_name(auth_client):
+    auth_client.post('/api/habits/', {'name': 'Read books'})
+    auth_client.post('/api/habits', {'name': 'Drink water'})
+
+    response = auth_client.get('/?api/habits/search=water')
+    results = response.data['results'] if 'results' in response.data else response.data
+    names = [h['name'] for h in results]
+
+    assert 'Drink water' in names
+    assert 'Read books' not in names
