@@ -11,13 +11,13 @@ def test_create_habit(auth_client):
 def test_list_habits_requires_auth():
     from rest_framework.test import APIClient
     client = APIClient()
-    response = client.get('/api/habits')
-    assert response.status_code == 401
+    response = client.get('/api/habits/')
+    assert response.status_code == 403
 
 
 @pytest.mark.django_db
 def test_get_nonexistent_habit(auth_client):
-    response = auth_client.get('/api/habits/99999')
+    response = auth_client.get('/api/habits/99999/')
     assert response.status_code == 404
 
 
@@ -26,7 +26,7 @@ def test_update_habit(auth_client):
     create_response = auth_client.post('/api/habits/', {'name': 'Old name'})
     habit_id = create_response.data['id']
 
-    update_response = auth_client.patch(f'/api/habits/{habit_id}',
+    update_response = auth_client.patch(f'/api/habits/{habit_id}/',
                                         {'name': 'New name'})
     assert update_response.status_code == 200
     assert update_response.data['name'] == 'New name'
@@ -42,30 +42,30 @@ def test_soft_delete_habit(auth_client):
     assert delete_response.status_code == 204
 
     list_response = auth_client.get('/api/habits/')
-    habit_ids = [h['id'] for h in list_response.data['results']]
+    habit_ids = [h['id'] for h in list_response.data]
     assert habit_id not in habit_ids
 
-    from habit.models import Habit
+    from habits.models import Habit
     habit = Habit.objects.get(id=habit_id)
     assert habit.is_deleted == True
 
 
 @pytest.mark.django_db
 def test_user_cannot_access_others_habits(auth_client, other_user):
-    from habit.models import Habit
+    from habits.models import Habit
     other_habit = Habit.objects.create(user=other_user,
-                                              name='Not shown habit')
+                                       name='Not shown habit')
 
-    response = auth_client.get(f'/api/habits/{other_habit.id}')
-    assert response.status_code in (403, 404)
+    response = auth_client.get(f'/api/habits/{other_habit.id}/')
+    assert response.status_code == 404
 
 
 @pytest.mark.django_db
 def test_filter_habits_by_name(auth_client):
     auth_client.post('/api/habits/', {'name': 'Read books'})
-    auth_client.post('/api/habits', {'name': 'Drink water'})
+    auth_client.post('/api/habits/', {'name': 'Drink water'})
 
-    response = auth_client.get('/?api/habits/search=water')
+    response = auth_client.get('/api/habits/', {'search': 'water'})
     results = response.data['results'] if 'results' in response.data else response.data
     names = [h['name'] for h in results]
 
