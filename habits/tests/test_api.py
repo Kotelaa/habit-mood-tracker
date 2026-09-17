@@ -51,6 +51,28 @@ def test_soft_delete_habit(auth_client):
 
 
 @pytest.mark.django_db
+def test_delete_habit_returns_204(habit):
+    response = habit.soft_delete()
+    assert response.status_code == 204
+
+
+@pytest.mark.django_db
+def test_delete_habit_exclude_from_list(habit):
+    response = habit.soft_delete()
+    habit_ids = [h for h in habit['id']]
+
+    assert response.habit_id not in habit_ids
+
+
+@pytest.mark.django_db
+def test_delete_habit_is_deleted_True_in_db(habit):
+    response = habit.soft_delete()
+    assert response.data['is_deleted'] == True
+
+
+
+
+@pytest.mark.django_db
 def test_user_cannot_access_others_habits(auth_client, other_user):
     from habits.models import Habit
     other_habit = Habit.objects.create(user=other_user,
@@ -71,3 +93,14 @@ def test_filter_habits_by_name(auth_client):
 
     assert 'Drink water' in names
     assert 'Read books' not in names
+
+
+@pytest.mark.django_db
+def test_update_habit_streak(auth_client):
+    create_response = auth_client.post('/api/habits/', {'name': 'Do exercises'})
+    habit_id = create_response.data['id']
+
+    response = auth_client.patch(f'/api/habits/{habit_id}/', {'streak': 5})
+
+    assert response.status_code == 200
+    assert response.data['streak'] == 5
