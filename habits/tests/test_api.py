@@ -1,7 +1,7 @@
 import pytest
 from datetime import date
 from freezegun import freeze_time
-
+from habits.models import Habit
 
 @pytest.mark.django_db
 def test_create_habit_returns_201_with_correct_name(auth_client):
@@ -51,15 +51,21 @@ def test_soft_deleted_habit_excluded_from_list(created_habit):
 
 
 @pytest.mark.django_db
-def test_soft_deleted_habit_still_exists_in_db_as_deleted(habit):
-    response = habit[0].soft_delete()
-    assert response.data['is_deleted'] == True
+def test_soft_deleted_habit_still_exists_in_db_as_deleted(created_habit):
+    client, habit_id = created_habit
+    client.delete(f'/api/habits/{habit_id}/')
+
+    habit = Habit.objects.get(id=habit_id)
+    assert habit.is_deleted == True
+
 
 
 @pytest.mark.django_db
-def test_complete_habit_increments_streak_by_one(habit):
-    response = habit[0].complete()
-    assert habit[0].streak == 1
+def test_complete_habit_increments_streak_by_one(created_habit):
+    client, habit_id = created_habit
+    response = client.post(f'/api/habits/{habit_id}/complete/')
+    assert response.status_code == 200
+    assert response.data['streak'] == 1
 
 
 @pytest.mark.django_db
