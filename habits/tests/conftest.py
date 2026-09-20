@@ -21,12 +21,16 @@ def other_user(db):
     return User.objects.create_user(username='TestUser2', password='testpassword456')
 
 
+def anon_client():
+    return APIClient()
+
+
 @pytest.fixture
-def habit(auth_client):
+def created_habit(auth_client):
     response = auth_client.post('/api/habits/',
                                 {'name': 'Example habit'})
     habit_id = response.data['id']
-    return habit_id
+    return auth_client, habit_id
 
 
 @pytest.fixture
