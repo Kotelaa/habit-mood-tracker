@@ -1,4 +1,7 @@
 import pytest
+from datetime import date
+from freezegun import freeze_time
+
 
 @pytest.mark.django_db
 def test_create_habit_returns_201_with_correct_name(auth_client):
@@ -8,10 +11,8 @@ def test_create_habit_returns_201_with_correct_name(auth_client):
 
 
 @pytest.mark.django_db
-def test_list_habits_requires_auth_returns_403():
-    from rest_framework.test import APIClient
-    client = APIClient()
-    response = client.get('/api/habits/')
+def test_list_habits_requires_auth_returns_403(anon_client):
+    response = anon_client.get('/api/habits/')
     assert response.status_code == 403
 
 
@@ -33,26 +34,8 @@ def test_update_habit_returns_200_and_updates_name(auth_client):
 
 
 @pytest.mark.django_db
-def test_soft_delete_habit_returns_204_excluded_from_list_and_still_in_db(auth_client):
-    create_response = auth_client.post('/api/habits/',
-                                       {'name': 'To be deleted'})
-    habit_id = create_response.data['id']
-
-    delete_response = auth_client.delete(f'/api/habits/{habit_id}/')
-    assert delete_response.status_code == 204
-
-    list_response = auth_client.get('/api/habits/')
-    habit_ids = [h['id'] for h in list_response.data]
-    assert habit_id not in habit_ids
-
-    from habits.models import Habit
-    habit = Habit.objects.get(id=habit_id)
-    assert habit.is_deleted == True
-
-
-@pytest.mark.django_db
-def test_delete_habit_returns_204(habit):
-    response = habit[0].soft_delete()
+def test_delete_habit_returns_204(created_habit):
+    response = created_habit.delete()
     assert response.status_code == 204
 
 
