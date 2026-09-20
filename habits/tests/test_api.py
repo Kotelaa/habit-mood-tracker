@@ -17,6 +17,15 @@ def test_list_habits_requires_auth_returns_403(anon_client):
 
 
 @pytest.mark.django_db
+def test_user_cannot_access_others_habits_returns_404(auth_client, other_user):
+    other_habit = Habit.objects.create(user=other_user,
+                                       name='Not shown habit')
+
+    response = auth_client.get(f'/api/habits/{other_habit.id}/')
+    assert response.status_code == 404
+
+
+@pytest.mark.django_db
 def test_get_nonexistent_habit_returns_404(auth_client):
     response = auth_client.get('/api/habits/99999/')
     assert response.status_code == 404
@@ -68,15 +77,6 @@ def test_complete_habit_increments_streak_by_one(created_habit):
     assert response.data['streak'] == 1
 
 
-@pytest.mark.django_db
-def test_user_cannot_access_others_habits_returns_404(auth_client, other_user):
-    from habits.models import Habit
-    other_habit = Habit.objects.create(user=other_user,
-                                       name='Not shown habit')
-
-    response = auth_client.get(f'/api/habits/{other_habit.id}/')
-    assert response.status_code == 404
-
 
 @pytest.mark.django_db
 def test_search_habits_by_name_returns_matching_only(auth_client):
@@ -92,18 +92,17 @@ def test_search_habits_by_name_returns_matching_only(auth_client):
 
 
 @pytest.mark.django_db
-def test_patch_streak_field_is_ignored_stays_zero(auth_client):
-    create_response = auth_client.post('/api/habits/', {'name': 'Do exercises'})
-    habit_id = create_response.data['id']
-
-    response = auth_client.patch(f'/api/habits/{habit_id}/', {'streak': 5})
+def test_patch_streak_field_is_ignored_stays_zero(created_habit):
+    client, habit_id = created_habit
+    response = client.patch(f'/api/habits/{habit_id}/', {'streak': 5})
 
     assert response.status_code == 200
     assert response.data['streak'] == 0
 
 
-def test_complete_habit_three_times_skipping_one_day_still_increments_streak(auth_client):
-    habit = auth_client.post(name='Test')
+@pytest.mark.django_db
+def test_complete_habit_three_times_skipping_one_day_still_increments_streak(user):
+    habit = Habit.objects.create(user=user, name='Test streak')
 
     with freeze_time("2026-06-15"):
         habit.complete()
