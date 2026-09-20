@@ -26,4 +26,12 @@ def habit(auth_client):
     response = auth_client.post('/api/habits/',
                                 {'name': 'Example habit'})
     habit_id = response.data['id']
-    return habit, habit_id
+    return habit_id
+
+
+@pytest.fixture
+def deleted_habit(auth_client):
+    create_response = auth_client.post('/api/habits/', {'name': 'To be deleted'})
+    habit_id = create_response.data['id']
+    auth_client.delete(f'/api/habits/{habit_id}/')
+    return habit_id
