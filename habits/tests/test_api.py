@@ -40,11 +40,14 @@ def test_delete_habit_returns_204(created_habit):
 
 
 @pytest.mark.django_db
-def test_soft_deleted_habit_excluded_from_list(habit):
-    response = habit[0].soft_delete()
-    habit_ids = [h for h in habit['id']]
+def test_soft_deleted_habit_excluded_from_list(created_habit):
+    client, habit_id = created_habit
+    client.delete(f'/api/habits/{habit_id}/')
 
-    assert response.habit_id not in habit_ids
+    list_response = client.get('/api/habits/')
+    habit_ids = [h['id'] for h in list_response.data]
+
+    assert habit_id not in habit_ids
 
 
 @pytest.mark.django_db
