@@ -3,7 +3,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.db import models
 
-from datetime import date
+from datetime import date, timedelta
 
 class Habit(models.Model):
     FREQUENCY_CHOICES = [
@@ -33,7 +33,17 @@ class Habit(models.Model):
         return f"{self.name} | Streak: {self.streak}"
 
     def complete(self):
-        self.streak += 1
+        today = date.today()
+
+        if self.last_completed == today:
+            return
+
+        if (self.last_completed is not None and
+                self.last_completed < today - timedelta(days=1)):
+            self.streak = 1
+        else:
+            self.streak += 1
+
         self.last_completed = date.today()
         self.save()
 
