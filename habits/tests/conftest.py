@@ -21,6 +21,7 @@ def other_user(db):
     return User.objects.create_user(username='TestUser2', password='testpassword456')
 
 
+@pytest.fixture
 def anon_client():
     return APIClient()
 

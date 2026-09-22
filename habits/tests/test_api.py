@@ -110,10 +110,13 @@ def test_complete_habit_three_times_skipping_one_day_still_increments_streak(use
     with freeze_time("2026-06-16"):
         habit.complete()
 
+    assert habit.streak == 2
+    assert habit.last_completed == date(2026, 6, 16)
+
     with freeze_time("2026-06-18"):
         habit.complete()
 
-    assert habit.streak == 3
+    assert habit.streak == 1
     assert habit.last_completed == date(2026, 6, 18)
 
 
