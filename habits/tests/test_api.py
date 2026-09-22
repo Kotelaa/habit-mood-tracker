@@ -44,7 +44,8 @@ def test_update_habit_returns_200_and_updates_name(auth_client):
 
 @pytest.mark.django_db
 def test_delete_habit_returns_204(created_habit):
-    response = created_habit.delete()
+    client, habit_id = created_habit
+    response = client.delete(f'/api/habits/{habit_id}/')
     assert response.status_code == 204
 
 
