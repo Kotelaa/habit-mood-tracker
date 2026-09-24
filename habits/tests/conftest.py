@@ -50,12 +50,24 @@ def deleted_habit(auth_client):
 def daily_habit_with_3_streaks(user):
     habit = Habit.objects.create(user=user, name='Daily habit with 3 streaks')
 
-    with freeze_time("2026-06-15"):
+    with freeze_time("2026-07-15"):
         habit.complete()
-    with freeze_time("2026-06-16"):
+    with freeze_time("2026-07-16"):
         habit.complete()
-    with freeze_time("2026-06-17"):
+    with freeze_time("2026-07-17"):
         habit.complete()
 
     return habit
 
+
+@pytest.fixture
+def weekly_habit_with_2_streaks(user):
+    habit = Habit.objects.create(user=user, name='Weekly habit with 2 streaks',
+                                 frequency='weekly')
+
+    with freeze_time("2026-07-16"):
+        habit.complete()
+    with freeze_time("2026-07-17"):
+        habit.complete()
+
+    return habit
