@@ -137,7 +137,7 @@ def test_habits_stats_with_two_habits(auth_client, user):
     response = auth_client.get('/api/habits/stats/')
     assert response.status_code == 200
     assert response.data['total_habits'] == 2
-    assert response.data['avg_streak'] == 1
+    assert response.data['avg_streak'] == 1.0
     assert response.data['best_streak'] == 2
     assert response.data['daily_habits'] == 2
     assert response.data['weekly_habits'] == 0
