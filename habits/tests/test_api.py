@@ -66,7 +66,7 @@ def test_soft_deleted_habit_still_exists_in_db_as_deleted(created_habit):
     client.delete(f'/api/habits/{habit_id}/')
 
     habit = Habit.objects.get(id=habit_id)
-    assert habit.is_deleted == True
+    assert habit.is_deleted is True
 
 
 
@@ -121,4 +121,25 @@ def test_complete_habit_three_times_skipping_one_day_still_increments_streak(use
     assert habit.last_completed == date(2026, 6, 18)
 
 
+@pytest.mark.django_db
+def test_habits_stats_with_two_habits(auth_client, user):
+    habit_with_two_streaks = Habit.objects.create(user=user,
+                                                  name='Test habit with 2 streaks')
+    habit_with_zero_streaks = Habit.objects.create(user=user,
+                                                   name='Test habit with zero streaks')
+
+    with freeze_time("2026-06-15"):
+        habit_with_two_streaks.complete()
+
+    with freeze_time("2026-06-16"):
+        habit_with_two_streaks.complete()
+
+    response = auth_client.get('/api/habits/stats/')
+    assert response.status_code == 200
+    assert response.data['total_habits'] == 2
+    assert response.data['avg_streak'] == 1
+    assert response.data['best_streak'] == 2
+    assert response.data['daily_habits'] == 2
+    assert response.data['weekly_habits'] == 0
+    assert response.data['monthly_habits'] == 0
 
