@@ -122,24 +122,15 @@ def test_complete_habit_three_times_skipping_one_day_still_increments_streak(use
 
 
 @pytest.mark.django_db
-def test_habits_stats_with_two_habits(auth_client, user):
-    habit_with_two_streaks = Habit.objects.create(user=user,
-                                                  name='Test habit with 2 streaks')
-    habit_with_zero_streaks = Habit.objects.create(user=user,
-                                                   name='Test habit with zero streaks')
-
-    with freeze_time("2026-06-15"):
-        habit_with_two_streaks.complete()
-
-    with freeze_time("2026-06-16"):
-        habit_with_two_streaks.complete()
-
+def test_habits_stats_with_three_habits(auth_client, daily_habit_with_three_streaks,
+                                        weekly_habit_with_two_streaks,
+                                        monthly_habit_with_zero_streaks):
     response = auth_client.get('/api/habits/stats/')
     assert response.status_code == 200
-    assert response.data['total_habits'] == 2
-    assert response.data['avg_streak'] == 1.0
-    assert response.data['best_streak'] == 2
-    assert response.data['daily_habits'] == 2
-    assert response.data['weekly_habits'] == 0
-    assert response.data['monthly_habits'] == 0
+    assert response.data['total_habits'] == 3
+    assert response.data['avg_streak'] == 1.7
+    assert response.data['best_streak'] == 3
+    assert response.data['daily_habits'] == 1
+    assert response.data['weekly_habits'] == 1
+    assert response.data['monthly_habits'] == 1
 
