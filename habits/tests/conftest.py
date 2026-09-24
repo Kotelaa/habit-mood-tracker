@@ -44,3 +44,18 @@ def deleted_habit(auth_client):
     habit_id = create_response.data['id']
     auth_client.delete(f'/api/habits/{habit_id}/')
     return habit_id
+
+
+@pytest.fixture
+def daily_habit_with_3_streaks(user):
+    habit = Habit.objects.create(user=user, name='Daily habit with 3 streaks')
+
+    with freeze_time("2026-06-15"):
+        habit.complete()
+    with freeze_time("2026-06-16"):
+        habit.complete()
+    with freeze_time("2026-06-17"):
+        habit.complete()
+
+    return habit
+
