@@ -43,6 +43,16 @@ def test_update_habit_returns_200_and_updates_name(auth_client):
 
 
 @pytest.mark.django_db
+def test_add_description_to_the_habit_returns_habti_description(created_habit):
+    client, habit_id = created_habit
+    response = client.patch(f'/api/habits/{habit_id}/',
+                            {'description': 'Description of the habit'})
+    assert response.status_code == 200
+    assert response.data['description'] == 'Description of the habit'
+    assert response.data['name'] == 'Example habit'
+
+
+@pytest.mark.django_db
 def test_delete_habit_returns_204(created_habit):
     client, habit_id = created_habit
     response = client.delete(f'/api/habits/{habit_id}/')
