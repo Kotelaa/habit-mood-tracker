@@ -69,14 +69,12 @@ def test_soft_deleted_habit_still_exists_in_db_as_deleted(created_habit):
     assert habit.is_deleted is True
 
 
-
 @pytest.mark.django_db
 def test_complete_habit_increments_streak_by_one(created_habit):
     client, habit_id = created_habit
     response = client.post(f'/api/habits/{habit_id}/complete/')
     assert response.status_code == 200
     assert response.data['streak'] == 1
-
 
 
 @pytest.mark.django_db
