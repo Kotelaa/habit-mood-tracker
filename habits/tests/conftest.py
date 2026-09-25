@@ -82,5 +82,6 @@ def monthly_habit_with_zero_streaks(user):
 
 @pytest.fixture
 def created_mood(auth_client):
-    mood = auth_client.post('/api/mood/', {'mood': 3})
-    return mood
+    response = auth_client.post('/api/mood/', {'mood': 3})
+    mood_id = response.data['id']
+    return auth_client, mood_id
