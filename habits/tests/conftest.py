@@ -33,7 +33,7 @@ def anon_client():
 @pytest.fixture
 def created_habit(auth_client):
     response = auth_client.post('/api/habits/',
-                                {'name': 'Example habit'})
+                                {'name': 'Created habit'})
     habit_id = response.data['id']
     return auth_client, habit_id
 
@@ -78,3 +78,9 @@ def monthly_habit_with_zero_streaks(user):
     habit = Habit.objects.create(user=user, name='Monthly habit with 0 streaks',
                                  frequency='monthly')
     return habit
+
+
+@pytest.fixture
+def created_mood(auth_client):
+    mood = auth_client.post('/api/mood/', {'mood': 3})
+    return mood

@@ -49,7 +49,7 @@ def test_add_description_to_the_habit_returns_habti_description(created_habit):
                             {'description': 'Description of the habit'})
     assert response.status_code == 200
     assert response.data['description'] == 'Description of the habit'
-    assert response.data['name'] == 'Example habit'
+    assert response.data['name'] == 'Created habit'
 
 
 @pytest.mark.django_db
