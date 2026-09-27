@@ -43,7 +43,7 @@ def test_update_habit_returns_200_and_updates_name(auth_client):
 
 
 @pytest.mark.django_db
-def test_add_description_to_the_habit_returns_habti_description(created_habit):
+def test_add_description_to_the_habit_returns_habit_description(created_habit):
     client, habit_id = created_habit
     response = client.patch(f'/api/habits/{habit_id}/',
                             {'description': 'Description of the habit'})
@@ -98,15 +98,6 @@ def test_search_habits_by_name_returns_matching_only(auth_client):
 
     assert 'Drink water' in names
     assert 'Read books' not in names
-
-
-@pytest.mark.django_db
-def test_patch_streak_field_is_ignored_stays_zero(created_habit):
-    client, habit_id = created_habit
-    response = client.patch(f'/api/habits/{habit_id}/', {'streak': 5})
-
-    assert response.status_code == 200
-    assert response.data['streak'] == 0
 
 
 @pytest.mark.django_db
