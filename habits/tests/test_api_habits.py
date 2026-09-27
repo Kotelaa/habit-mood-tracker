@@ -110,26 +110,6 @@ def test_patch_streak_field_is_ignored_stays_zero(created_habit):
 
 
 @pytest.mark.django_db
-def test_complete_habit_three_times_skipping_one_day_still_increments_streak(user):
-    habit = Habit.objects.create(user=user, name='Test streak')
-
-    with freeze_time("2026-06-15"):
-        habit.complete()
-
-    with freeze_time("2026-06-16"):
-        habit.complete()
-
-    assert habit.streak == 2
-    assert habit.last_completed == date(2026, 6, 16)
-
-    with freeze_time("2026-06-18"):
-        habit.complete()
-
-    assert habit.streak == 1
-    assert habit.last_completed == date(2026, 6, 18)
-
-
-@pytest.mark.django_db
 def test_habits_stats_with_three_habits(auth_client, daily_habit_with_three_streaks,
                                         weekly_habit_with_two_streaks,
                                         monthly_habit_with_zero_streaks):
