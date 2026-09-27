@@ -9,7 +9,7 @@ def test_habit_name_less_than_three_symbols_returns_validation_error():
 
 
 @pytest.mark.django_db
-def test_habit_name_capitalized_on_save(user):
+def test_habit_name_capitalized_by_validator(user):
     serializer = HabitSerializer(data={'name': 'drink water'})
     assert serializer.is_valid() is True
     habit = serializer.save(user=user)
@@ -21,3 +21,10 @@ def test_habit_id_field_read_only_and_cannot_be_changed():
     serializer = HabitSerializer(data={'name': 'Test habit', 'id': 999})
     assert serializer.is_valid() is True
     assert 'id' not in serializer.validated_data
+
+
+@pytest.mark.django_db
+def test_mood_post_second_mood_same_day_returns_400(auth_client):
+    auth_client.post('/api/mood/', data={'mood': 4})
+    response = auth_client.post('/api/mood/', data={'mood': 2})
+    assert response.status_code == 400
