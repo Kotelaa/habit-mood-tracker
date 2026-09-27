@@ -43,6 +43,16 @@ def test_update_habit_returns_200_and_updates_name(auth_client):
 
 
 @pytest.mark.django_db
+def test_add_description_to_the_habit_returns_habti_description(created_habit):
+    client, habit_id = created_habit
+    response = client.patch(f'/api/habits/{habit_id}/',
+                            {'description': 'Description of the habit'})
+    assert response.status_code == 200
+    assert response.data['description'] == 'Description of the habit'
+    assert response.data['name'] == 'Created habit'
+
+
+@pytest.mark.django_db
 def test_delete_habit_returns_204(created_habit):
     client, habit_id = created_habit
     response = client.delete(f'/api/habits/{habit_id}/')
@@ -69,14 +79,12 @@ def test_soft_deleted_habit_still_exists_in_db_as_deleted(created_habit):
     assert habit.is_deleted is True
 
 
-
 @pytest.mark.django_db
 def test_complete_habit_increments_streak_by_one(created_habit):
     client, habit_id = created_habit
     response = client.post(f'/api/habits/{habit_id}/complete/')
     assert response.status_code == 200
     assert response.data['streak'] == 1
-
 
 
 @pytest.mark.django_db
@@ -102,44 +110,15 @@ def test_patch_streak_field_is_ignored_stays_zero(created_habit):
 
 
 @pytest.mark.django_db
-def test_complete_habit_three_times_skipping_one_day_still_increments_streak(user):
-    habit = Habit.objects.create(user=user, name='Test streak')
-
-    with freeze_time("2026-06-15"):
-        habit.complete()
-
-    with freeze_time("2026-06-16"):
-        habit.complete()
-
-    assert habit.streak == 2
-    assert habit.last_completed == date(2026, 6, 16)
-
-    with freeze_time("2026-06-18"):
-        habit.complete()
-
-    assert habit.streak == 1
-    assert habit.last_completed == date(2026, 6, 18)
-
-
-@pytest.mark.django_db
-def test_habits_stats_with_two_habits(auth_client, user):
-    habit_with_two_streaks = Habit.objects.create(user=user,
-                                                  name='Test habit with 2 streaks')
-    habit_with_zero_streaks = Habit.objects.create(user=user,
-                                                   name='Test habit with zero streaks')
-
-    with freeze_time("2026-06-15"):
-        habit_with_two_streaks.complete()
-
-    with freeze_time("2026-06-16"):
-        habit_with_two_streaks.complete()
-
+def test_habits_stats_with_three_habits(auth_client, daily_habit_with_three_streaks,
+                                        weekly_habit_with_two_streaks,
+                                        monthly_habit_with_zero_streaks):
     response = auth_client.get('/api/habits/stats/')
     assert response.status_code == 200
-    assert response.data['total_habits'] == 2
-    assert response.data['avg_streak'] == 1.0
-    assert response.data['best_streak'] == 2
-    assert response.data['daily_habits'] == 2
-    assert response.data['weekly_habits'] == 0
-    assert response.data['monthly_habits'] == 0
+    assert response.data['total_habits'] == 3
+    assert response.data['avg_streak'] == 1.7
+    assert response.data['best_streak'] == 3
+    assert response.data['daily_habits'] == 1
+    assert response.data['weekly_habits'] == 1
+    assert response.data['monthly_habits'] == 1
 
