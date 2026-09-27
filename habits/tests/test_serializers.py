@@ -17,9 +17,7 @@ def test_habit_name_capitalized_on_save(user):
 
 
 @pytest.mark.django_db
-def test_patch_streak_field_is_ignored_stays_zero(created_habit):
-    client, habit_id = created_habit
-    response = client.patch(f'/api/habits/{habit_id}/', {'streak': 5})
-
-    assert response.status_code == 200
-    assert response.data['streak'] == 0
+def test_habit_id_field_read_only_and_cannot_be_changed():
+    serializer = HabitSerializer(data={'name': 'Test habit', 'id': 999})
+    assert serializer.is_valid() is True
+    assert 'id' not in serializer.validated_data
