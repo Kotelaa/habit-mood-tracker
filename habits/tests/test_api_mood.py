@@ -28,4 +28,18 @@ def test_mood_list_for_auth_user_returns_200_and_all_moods(auth_client):
     assert len(response.data) == 1
 
 
-# pytest habits/tests/test_api_mood.py
+@pytest.mark.django_db
+def test_mood_update_returns_200_and_new_mood(auth_client):
+    create_response = auth_client.post('/api/mood/', {'mood': 2})
+    mood_id = create_response.data['id']
+
+    response = auth_client.patch(f'/api/mood/{mood_id}/', {'mood': 4})
+    assert response.status_code == 200
+    assert response.data['mood'] == 4
+
+
+@pytest.mark.django_db
+def test_create_second_mood_same_day_returns_400(auth_client):
+    auth_client.post('/api/mood/', {'mood': 1})
+    response = auth_client.post('/api/mood/', {'mood': 3})
+    assert response.status_code == 400
