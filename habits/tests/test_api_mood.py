@@ -18,3 +18,14 @@ def test_create_mood_returns_201_and_correct_mood(auth_client):
     assert response.status_code == 201
     assert response.data['mood'] == 4
     assert response.data['mood_display'] == '🙂 Good'
+
+
+@pytest.mark.django_db
+def test_mood_list_for_auth_user_returns_200_and_all_moods(auth_client):
+    auth_client.post('/api/mood/', {'mood': 5})
+    response = auth_client.get('/api/mood/')
+    assert response.status_code == 200
+    assert len(response.data) == 1
+
+
+# pytest habits/tests/test_api_mood.py
