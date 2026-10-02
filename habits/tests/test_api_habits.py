@@ -11,6 +11,12 @@ def test_create_habit_returns_201_with_correct_name(auth_client):
 
 
 @pytest.mark.django_db
+def test_create_habit_missing_name_returns_400(auth_client):
+    response = auth_client.post('/api/habits/', {})
+    assert response.status_code == 400
+    assert 'name' in response.data
+
+@pytest.mark.django_db
 def test_list_habits_requires_auth_returns_403(anon_client):
     response = anon_client.get('/api/habits/')
     assert response.status_code == 403
