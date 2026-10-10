@@ -5,6 +5,7 @@ A web application for tracking daily, weekly, and monthly habits with mood
 logging and streak tracking. Built with Django and PostgreSQL.
 
 **Live demo:** https://habittracker-production-8eea.up.railway.app
+
 ![tests](https://github.com/Kotelaa/habit_tracker/actions/workflows/tests.yml/badge.svg)
 
 ---
