@@ -263,7 +263,7 @@ class MoodViewSet(viewsets.ModelViewSet):
                    400: OpenApiResponse(description='Validation error')}
     )
     def update(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
+        return super().update(request, *args, **kwargs)
 
 
     @extend_schema(

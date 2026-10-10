@@ -11,3 +11,5 @@ staticfiles/
 media/
 *.sqlite3
 .idea/
+.coverage
+.pytest_cache/
