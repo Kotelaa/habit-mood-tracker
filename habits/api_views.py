@@ -19,7 +19,7 @@ class HabitViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Habit.objects.filter(
-            user=self.request.user, is_deleted=False).order_by("streak")
+            user=self.request.user, is_deleted=False).order_by("-streak")
 
 
     def perform_create(self, serializer):
