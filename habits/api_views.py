@@ -19,7 +19,7 @@ class HabitViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Habit.objects.filter(
-            user=self.request.user, is_deleted=False).order_by("streak")
+            user=self.request.user, is_deleted=False).order_by("-streak")
 
 
     def perform_create(self, serializer):
@@ -263,7 +263,7 @@ class MoodViewSet(viewsets.ModelViewSet):
                    400: OpenApiResponse(description='Validation error')}
     )
     def update(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
+        return super().update(request, *args, **kwargs)
 
 
     @extend_schema(
